@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trader Dashboard - Verified Trader Network</title>
+<style>
+:root {
+  --bg:#0b0f14;
+  --text:#e6e8eb;
+  --accent:#4f7cff;
+  --low:#22c55e;
+  --med:#f59e0b;
+  --high:#ef4444;
+}
+body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text); }
+.container { max-width:1100px; margin:0 auto; padding:40px; }
+h1,h2 { margin-bottom:24px; }
+.card { background:#131b29; padding:20px; margin-bottom:20px; border-radius:12px; }
+.flex { display:flex; gap:20px; flex-wrap:wrap; }
+.flex .card { flex:1; min-width:200px; }
+table { width:100%; border-collapse:collapse; margin-top:20px; }
+th, td { padding:12px; border-bottom:1px solid #1c2440; text-align:left; }
+th { color:var(--accent); }
+.risk-low { color:var(--low); font-weight:700; }
+.risk-med { color:var(--med); font-weight:700; }
+.risk-high { color:var(--high); font-weight:700; }
+</style>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+google.charts.load('current', {'packages':['table','corechart']});
+google.charts.setOnLoadCallback(drawDashboard);
+
+function drawDashboard() {
+  var query = new google.visualization.Query(
+    'https://docs.google.com/spreadsheets/d/1OWtzrhnn3X0wnGrqBJ5lsBILkZQjMJ-kyjC-y2CleoA/gviz/tq?sheet=Sheet1&headers=1'
+  );
+  query.send(function(response) {
+    if (response.isError()) {
+      console.error('Error: ' + response.getMessage());
+      return;
+    }
+    var data = response.getDataTable();
+
+    // Hide email column (assume column 2)
+    if(data.getNumberOfColumns() > 2) data.removeColumn(2);
+
+    // Add Score & Risk columns if they don't exist
+    var scoreIndex = data.getNumberOfColumns();
+    data.addColumn('number','Score');
+    data.addColumn('string','Risk');
+
+    var totalTraders = data.getNumberOfRows();
+    var brokerAPI=0, brokerStatement=0, screenshot=0;
+    var lowRisk=0, medRisk=0, highRisk=0;
+
+    for(var i=0;i<data.getNumberOfRows();i++){
+      var method = data.getValue(i,2); // Verification Method
+      var score=0;
+      if(method==='Broker API') { score=50; brokerAPI++; }
+      else if(method==='Broker Statement') { score=30; brokerStatement++; }
+      else if(method==='Screenshot') { score=10; screenshot++; }
+
+      data.setValue(i,scoreIndex,score);
+
+      var risk='';
+      if(score>=50) { risk='Low'; lowRisk++; }
+      else if(score>=30) { risk='Medium'; medRisk++; }
+      else { risk='High'; highRisk++; }
+      data.setValue(i,scoreIndex+1,risk);
+    }
+
+    // Draw leaderboard table
+    var table = new google.visualization.Table(document.getElementById('leaderboard_div'));
+    table.draw(data, {showRowNumber:true,width:'100%',height:'100%'});
+
+    // Draw Verification Method pie chart
+    var methodData = google.visualization.arrayToDataTable([
+      ['Method','Count'],
+      ['Broker API', brokerAPI],
+      ['Broker Statement', brokerStatement],
+      ['Screenshot', screenshot]
+    ]);
+    var methodChart = new google.visualization.PieChart(document.getElementById('method_chart'));
+    methodChart.draw(methodData,{title:'Verification Method Breakdown',legend:{position:'right'},colors:['#4f7cff','#f59e0b','#ef4444']});
+
+    // Draw Risk distribution chart
+    var riskData = google.visualization.arrayToDataTable([
+      ['Risk','Count'],
+      ['Low',lowRisk],
+      ['Medium',medRisk],
+      ['High',highRisk]
+    ]);
+    var riskChart = new google.visualization.PieChart(document.getElementById('risk_chart'));
+    riskChart.draw(riskData,{title:'Risk Distribution',legend:{position:'right'},colors:['#22c55e','#f59e0b','#ef4444']});
+  });
+}
+</script>
+</head>
+<body>
+<div class="container">
+  <h1>Verified Trader Dashboard</h1>
+
+  <div class="flex">
+    <div class="card">
+      <h2>Total Traders</h2>
+      <div id="total_traders"></div>
+    </div>
+    <div class="card">
+      <h2>Verification Method</h2>
+      <div id="method_chart" style="height:250px;"></div>
+    </div>
+    <div class="card">
+      <h2>Risk Distribution</h2>
+      <div id="risk_chart" style="height:250px;"></div>
+    </div>
+  </div>
+
+  <h2>Leaderboard</h2>
+  <div id="leaderboard_div"></div>
+  <p style="margin-top:20px;"><a href="index.html">← Back to Home</a></p>
+</div>
+</body>
+</html>
