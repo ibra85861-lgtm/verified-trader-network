@@ -62,5 +62,56 @@
 </footer>
 
   </div>
+  <h2>Top 5 Verified Traders</h2>
+<div id="top5_div" style="margin-bottom:40px;"></div>
+
+<script type="text/javascript">
+google.charts.load('current', {'packages':['table']});
+google.charts.setOnLoadCallback(drawTop5);
+
+function drawTop5() {
+  var query = new google.visualization.Query(
+    'https://docs.google.com/spreadsheets/d/1OWtzrhnn3X0wnGrqBJ5lsBILkZQjMJ-kyjC-y2CleoA/gviz/tq?sheet=Sheet1&headers=1'
+  );
+  query.send(function(response) {
+    if (response.isError()) {
+      console.error('Error: ' + response.getMessage());
+      return;
+    }
+    var data = response.getDataTable();
+
+    // Hide email column (assume it's column 2)
+    if(data.getNumberOfColumns() > 2) data.removeColumn(2);
+
+    // Add Score column if it doesn't exist
+    var scoreIndex = data.getNumberOfColumns();
+    data.addColumn('number','Score');
+
+    for(var i=0;i<data.getNumberOfRows();i++){
+      var method = data.getValue(i,2); // Verification Method
+      var score=0;
+      if(method==='Broker API') score=50;
+      else if(method==='Broker Statement') score=30;
+      else if(method==='Screenshot') score=10;
+      data.setValue(i,scoreIndex,score);
+    }
+
+    // Sort by Score descending
+    data.sort([{column: scoreIndex, desc: true}]);
+
+    // Take top 5
+    var top5 = new google.visualization.DataTable();
+    top5.addColumn('string','Trader Alias');
+    top5.addColumn('string','Platform');
+    top5.addColumn('number','Score');
+    for(var i=0;i<Math.min(5,data.getNumberOfRows());i++){
+      top5.addRow([data.getValue(i,0), data.getValue(i,1), data.getValue(i,scoreIndex)]);
+    }
+
+    var table = new google.visualization.Table(document.getElementById('top5_div'));
+    table.draw(top5,{showRowNumber:true,width:'100%'});
+  });
+}
+</script>
 </body>
 </html>
