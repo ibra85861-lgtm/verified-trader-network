@@ -5,14 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leaderboard - Verified Trader Network</title>
 <style>
-:root { --bg:#0b0f14; --text:#e6e8eb; --accent:#4f7cff; --muted:#9aa4b2; }
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);}
-.container{max-width:1100px;margin:0 auto;padding:40px;}
-h1{font-size:36px;margin-bottom:24px;}
-table{width:100%;border-collapse:collapse;}
-th,td{padding:12px;border-bottom:1px solid #1c2440;text-align:left;}
-th{color:var(--accent);}
-a{color:var(--accent);}
+:root {
+  --bg:#0b0f14;
+  --text:#e6e8eb;
+  --accent:#4f7cff;
+  --low:#22c55e;
+  --med:#f59e0b;
+  --high:#ef4444;
+}
+body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text); }
+.container { max-width:1100px; margin:0 auto; padding:40px; }
+h1 { font-size:36px; margin-bottom:24px; }
+table { width:100%; border-collapse:collapse; }
+th, td { padding:12px; border-bottom:1px solid #1c2440; text-align:left; }
+th { color:var(--accent); }
+.risk-low { color:var(--low); font-weight:700; }
+.risk-med { color:var(--med); font-weight:700; }
+.risk-high { color:var(--high); font-weight:700; }
+a { color:var(--accent); }
 </style>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -29,10 +39,36 @@ function drawTable() {
       return;
     }
     var data = response.getDataTable();
-    // Optional: hide email column (assume it's column 2)
+
+    // Hide email column (assume it's column 2)
     if(data.getNumberOfColumns() > 2) {
       data.removeColumn(2);
     }
+
+    // Add Score column (based on Verification Method)
+    if(!data.getColumnIndex('Score') >= 0){
+      data.addColumn('number', 'Score');
+    }
+
+    for(var i=0;i<data.getNumberOfRows();i++){
+      var method = data.getValue(i,2); // Verification Method column
+      var score = 0;
+      if(method === 'Broker API') score = 50;
+      else if(method === 'Broker Statement') score = 30;
+      else if(method === 'Screenshot') score = 10;
+      data.setValue(i, data.getNumberOfColumns()-1, score);
+
+      // Add risk badge column
+      var risk = '';
+      if(score>=50) risk='Low';
+      else if(score>=30) risk='Medium';
+      else risk='High';
+      if(!data.getColumnIndex('Risk') >= 0){
+        data.addColumn('string','Risk');
+      }
+      data.setValue(i, data.getNumberOfColumns()-1, risk);
+    }
+
     var table = new google.visualization.Table(document.getElementById('leaderboard_div'));
     table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
   });
