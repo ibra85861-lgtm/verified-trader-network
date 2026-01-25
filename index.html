@@ -106,6 +106,7 @@ function drawTop5() {
     top5.addColumn('number','Score');
     for(var i=0;i<Math.min(5,data.getNumberOfRows());i++){
       top5.addRow([data.getValue(i,0), data.getValue(i,1), data.getValue(i,scoreIndex)]);
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     }
 
     var table = new google.visualization.Table(document.getElementById('top5_div'));
