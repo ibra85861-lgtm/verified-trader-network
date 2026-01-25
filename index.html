@@ -108,9 +108,6 @@ function drawTop5() {
       top5.addRow([data.getValue(i,0), data.getValue(i,1), data.getValue(i,scoreIndex)]);
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     }
-
-    var table = new google.visualization.Table(document.getElementById('top5_div'));
-    table.draw(top5,{showRowNumber:true,width:'100%'});
   });
 }
 </script>
@@ -121,7 +118,7 @@ function drawTop5() {
 <script type="text/javascript">
 google.charts.load('current', {'packages':['table']});
 google.charts.setOnLoadCallback(drawTop5);
-
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 function drawTop5() {
   var query = new google.visualization.Query(
     'https://docs.google.com/spreadsheets/d/1OWtzrhnn3X0wnGrqBJ5lsBILkZQjMJ-kyjC-y2CleoA/gviz/tq?sheet=Sheet1&headers=1'
