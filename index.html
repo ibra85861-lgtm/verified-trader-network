@@ -98,104 +98,46 @@ function drawTop5() {
 
     // Sort by Score descending
     data.sort([{column: scoreIndex, desc: true}]);
-
-    // Take top 5
-    var top5 = new google.visualization.DataTable();
-    top5.addColumn('string','Trader Alias');
-    top5.addColumn('string','Platform');
-    top5.addColumn('number','Score');
-    for(var i=0;i<Math.min(5,data.getNumberOfRows());i++){
-      top5.addRow([data.getValue(i,0), data.getValue(i,1), data.getValue(i,scoreIndex)]);
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    }
-  });
-}
-</script>
-  <!-- Top 5 Verified Traders -->
 <h2>Top 5 Verified Traders</h2>
-<div id="top5_div" style="margin-bottom:40px;"></div>
+<div id="top5_div" style="margin:40px 0;"></div>
 
-<script type="text/javascript">
-google.charts.load('current', {'packages':['table']});
-google.charts.setOnLoadCallback(drawTop5);
 <script src="https://www.gstatic.com/charts/loader.js"></script>
-function drawTop5() {
-  var query = new google.visualization.Query(
-    'https://docs.google.com/spreadsheets/d/1OWtzrhnn3X0wnGrqBJ5lsBILkZQjMJ-kyjC-y2CleoA/gviz/tq?sheet=Sheet1&headers=1'
-  );
-  query.send(function(response) {
-    if (response.isError()) {
-      console.error('Error: ' + response.getMessage());
-      return;
-    }
+<script>
+  google.charts.load('current', { packages:['table'] });
+  google.charts.setOnLoadCallback(drawTop5);
 
-    var data = response.getDataTable();
+  function drawTop5() {
+    var query = new google.visualization.Query(
+      'https://docs.google.com/spreadsheets/d/1OWtzrhnn3X0wnGrqBJ5lsBILkZQjMJ-kyjC-y2CleoA/gviz/tq?sheet=Sheet1&headers=1'
+    );
 
-    // Hide email column (assume it's column 2)
-    if(data.getNumberOfColumns() > 2) data.removeColumn(2);
-
-    // Add Score & Risk columns
-    var scoreIndex = data.getNumberOfColumns();
-    data.addColumn('number','Score');
-    data.addColumn('string','Risk');
-
-    for(var i=0;i<data.getNumberOfRows();i++){
-      var method = data.getValue(i,2); // Verification Method
-      var score=0;
-      if(method==='Broker API') score=50;
-      else if(method==='Broker Statement') score=30;
-      else if(method==='Screenshot') score=10;
-      data.setValue(i,scoreIndex,score);
-
-      var risk='';
-      if(score>=50) risk='Low';
-      else if(score>=30) risk='Medium';
-      else risk='High';
-      data.setValue(i,scoreIndex+1,risk);
-    }
-
-    // Sort by Score descending
-    data.sort([{column: scoreIndex, desc: true}]);
-
-    // Take top 5
-    var top5 = new google.visualization.DataTable();
-    top5.addColumn('string','Trader Alias');
-    top5.addColumn('string','Platform');
-    top5.addColumn('number','Score');
-    top5.addColumn('string','Risk');
-
-    for(var i=0;i<Math.min(5,data.getNumberOfRows());i++){
-      top5.addRow([
-        data.getValue(i,0),
-        data.getValue(i,1),
-        data.getValue(i,scoreIndex),
-        data.getValue(i,scoreIndex+1)
-      ]);
-    }
-
-    // Draw table with styled risk badges
-    var table = new google.visualization.Table(document.getElementById('top5_div'));
-    table.draw(top5, {
-      showRowNumber: true,
-      width: '100%',
-      allowHtml: true,
-      cssClassNames: {
-        headerRow: 'header-row',
-        tableCell: 'table-cell'
+    query.send(function(response) {
+      if (response.isError()) {
+        document.getElementById('top5_div').innerHTML =
+          'Error loading leaderboard';
+        return;
       }
-    });
 
-    // Style risk badges
-    var rows = document.querySelectorAll('#top5_div table tbody tr');
-    rows.forEach((row,i)=>{
-      if(i>=5) return;
-      var cell = row.children[3]; // Risk column
-      if(cell.innerText==='Low') { cell.innerHTML='<span style="color:#22c55e;font-weight:700;">Low</span>'; }
-      else if(cell.innerText==='Medium') { cell.innerHTML='<span style="color:#f59e0b;font-weight:700;">Medium</span>'; }
-      else if(cell.innerText==='High') { cell.innerHTML='<span style="color:#ef4444;font-weight:700;">High</span>'; }
+      var data = response.getDataTable();
+
+      // Sort by Score (assumes Score is column 2)
+      data.sort([{ column: 2, desc: true }]);
+
+      // Limit to top 5
+      var view = new google.visualization.DataView(data);
+      view.setRows([0,1,2,3,4]);
+
+      var table = new google.visualization.Table(
+        document.getElementById('top5_div')
+      );
+
+      table.draw(view, {
+        showRowNumber: false,
+        width: '100%',
+        height: 'auto'
+      });
     });
-  });
-}
+  }
 </script>
 </body>
 </html>
