@@ -1,138 +1,178 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verified Trader Network</title>
-  <meta name="description" content="A trust infrastructure for traders, investors, and brokers." />
+
+  <!-- Styles & Animations -->
   <style>
-    :root { --bg:#0b0f14; --card:#121826; --text:#e6e8eb; --muted:#9aa4b2; --accent:#4f7cff; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell; background:linear-gradient(180deg,#0b0f14,#0e1422); color:var(--text); }
-    a { color:inherit; text-decoration:none; }
-    .container { max-width:1100px; margin:0 auto; padding:32px 20px; }
-    header { display:flex; align-items:center; justify-content:space-between; }
-    .logo { font-weight:800; letter-spacing:.3px; }
-    .badge { background:#0f1b3d; color:#b8c7ff; padding:6px 10px; border-radius:999px; font-size:12px; }
-    .hero { display:grid; grid-template-columns:1.2fr .8fr; gap:28px; margin-top:48px; }
-    .card { background:radial-gradient(1200px 200px at 10% -10%, #1a2350 0%, transparent 40%), var(--card); border:1px solid #1c2440; border-radius:20px; padding:28px; box-shadow:0 10px 30px rgba(0,0,0,.35); }
-    h1 { font-size:42px; line-height:1.1; margin:0 0 12px; }
-    p { color:var(--muted); }
-    .cta { display:flex; gap:12px; margin-top:18px; }
-    .btn { padding:14px 18px; border-radius:14px; background:var(--accent); color:white; font-weight:700; border:none; }
-    .btn.ghost { background:transparent; border:1px solid #2a3568; color:#cdd6ff; }
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:28px; }
-    .kpi { font-size:28px; font-weight:800; }
-    footer { margin-top:64px; border-top:1px solid #1c2440; padding-top:18px; color:#8f9bb3; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-    @media (max-width: 900px){ .hero{ grid-template-columns:1fr; } .grid{ grid-template-columns:1fr; } }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Fade-in animation for sections */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Delay animation for stagger effect */
+    .fade-delay-1 { animation-delay: 0.3s; }
+    .fade-delay-2 { animation-delay: 0.6s; }
+    .fade-delay-3 { animation-delay: 0.9s; }
+
+    /* Hero Button */
+    .hero-btn {
+      transition: all 0.3s ease;
+    }
+    .hero-btn:hover {
+      transform: scale(1.05);
+      background-color: #0056b3;
+    }
+
+    /* Leaderboard Table */
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      margin: auto;
+      max-width: 900px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    .leaderboard-table th, .leaderboard-table td {
+      padding: 10px;
+    }
+    .leaderboard-table thead {
+      background: #007bff;
+      color: white;
+    }
+    .leaderboard-table tbody tr {
+      border-bottom: 1px solid #ccc;
+      transition: all 0.2s ease-in-out;
+    }
+    .leaderboard-table tbody tr:hover {
+      background: #e6f0ff;
+      transform: scale(1.02);
+    }
+
+    /* Status Badges */
+    .status-badge {
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .status-verified { background: #28a745; }
+    .status-pending { background: #ffc107; }
+    .status-review { background: #dc3545; }
+
+    /* Section Padding */
+    section {
+      padding: 40px 20px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">VerifiedTraderNetwork</div>
-      <span class="badge">MVP</span>
-    </header><section class="hero">
-  <div class="card">
+
+  <!-- Hero Section -->
+  <div class="hero fade-in fade-delay-1" style="text-align:center; padding:60px 20px;">
     <h1>Verified Trader Network</h1>
-<p>The Trust Infrastructure for Modern Trading Markets.</p>
-<p>
-Building a transparent reputation system for traders across Africa.
-Verified identity. Public track record. Trusted performance.
-</p>
-    <div class="cta">
-      <button class="btn">Join the Waitlist</button>
-      <button class="btn ghost">View How It Works</button>
+    <p>The Trust Infrastructure for Modern Trading Markets.</p>
+    <p>
+      Building a transparent reputation system for traders across Africa.
+      Verified identity. Public track record. Trusted performance.
+    </p>
+    <a href="#top-traders" class="hero-btn" 
+       style="padding:12px 25px; background:#007bff; color:white; border-radius:5px; text-decoration:none;">
+       See Top Traders
+    </a>
+  </div>
+
+  <!-- Top 5 Leaderboard Section -->
+  <div id="top-traders" class="fade-in fade-delay-2" style="margin-top:40px;">
+    <h2 style="text-align:center; margin-bottom:20px;">Top 5 Verified Traders</h2>
+    <div style="overflow-x:auto;">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Trader Alias</th>
+            <th>Platform</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Kipsfx</td>
+            <td>Exness</td>
+            <td><span class="status-badge status-verified">Verified ✅</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>AlphaFX</td>
+            <td>Deriv</td>
+            <td><span class="status-badge status-verified">Verified ✅</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>TrendMaster</td>
+            <td>Binance</td>
+            <td><span class="status-badge status-pending">Pending ⏳</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>ProTrader</td>
+            <td>IQ Option</td>
+            <td><span class="status-badge status-verified">Verified ✅</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>FXKing</td>
+            <td>Exness</td>
+            <td><span class="status-badge status-review">Under Review ❌</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="grid">
-      <div class="card"><div class="kpi">✓</div><p>Identity & performance verification</p></div>
-      <div class="card"><div class="kpi">★</div><p>Reputation & reviews</p></div>
-      <div class="card"><div class="kpi">⚖</div><p>Dispute & compliance logs</p></div>
-    </div>
   </div>
-  <div class="card">
-    <h3>Why VTN?</h3>
-    <p>Scams, fake results, and broken trust slow capital. VTN is the missing layer—neutral, auditable, and built for Africa-first scale.</p>
-    <ul>
-      <li>For Traders: prove results, access capital</li>
-      <li>For Investors: filter signal from noise</li>
-      <li>For Brokers: reduce fraud & churn</li>
-    </ul>
-  </div>
-</section>
 
-<footer>
-  <div>© 2026 VerifiedTraderNetwork</div>
-  <div>Contact • Terms • Privacy</div>
-</footer>
-
-  </div>
-  <h2 style="text-align:center; margin-top:20px;">Top 5 Verified Traders</h2>
-
-<div style="overflow-x:auto; margin:auto; width:90%; max-width:900px;">
-  <table style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; text-align:center;">
-    <thead style="background:#007bff; color:white;">
-      <tr>
-        <th style="padding:10px;">Rank</th>
-        <th style="padding:10px;">Trader Alias</th>
-        <th style="padding:10px;">Platform</th>
-        <th style="padding:10px;">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="border-bottom:1px solid #ccc;">
-        <td style="padding:10px;">1</td>
-        <td style="padding:10px;">Kipsfx</td>
-        <td style="padding:10px;">Exness</td>
-        <td style="padding:10px; color:white; background:#28a745; border-radius:5px;">Verified ✅</td>
-      </tr>
-      <tr style="border-bottom:1px solid #ccc;">
-        <td style="padding:10px;">2</td>
-        <td style="padding:10px;">AlphaFX</td>
-        <td style="padding:10px;">Deriv</td>
-        <td style="padding:10px; color:white; background:#28a745; border-radius:5px;">Verified ✅</td>
-      </tr>
-      <tr style="border-bottom:1px solid #ccc;">
-        <td style="padding:10px;">3</td>
-        <td style="padding:10px;">TrendMaster</td>
-        <td style="padding:10px;">Binance</td>
-        <td style="padding:10px; color:white; background:#ffc107; border-radius:5px;">Pending ⏳</td>
-      </tr>
-      <tr style="border-bottom:1px solid #ccc;">
-        <td style="padding:10px;">4</td>
-        <td style="padding:10px;">ProTrader</td>
-        <td style="padding:10px;">IQ Option</td>
-        <td style="padding:10px; color:white; background:#28a745; border-radius:5px;">Verified ✅</td>
-      </tr>
-      <tr>
-        <td style="padding:10px;">5</td>
-        <td style="padding:10px;">FXKing</td>
-        <td style="padding:10px;">Exness</td>
-        <td style="padding:10px; color:white; background:#dc3545; border-radius:5px;">Under Review ❌</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-  <section style="background:#f7f7f7; padding:40px 20px; text-align:center; font-family:Arial, sans-serif; margin-top:40px;">
-  <h2 style="color:#007bff;">How Verified Trader Network Works</h2>
-  <p style="max-width:700px; margin:auto; margin-top:10px; font-size:16px; line-height:1.6;">
-    Verified Trader Network (VTN) ensures transparency and trust for traders and investors.
-    <br><br>
-    1️⃣ Traders apply for verification using our simple form.<br>
-    2️⃣ Our team reviews performance history and trading behavior.<br>
-    3️⃣ Verified traders get a public badge and ranking on the leaderboard.<br>
-    4️⃣ Investors and other traders can trust the ratings and reputation.
-  </p>
+  <!-- How It Works Section -->
+  <section class="fade-in fade-delay-3" style="background:#f7f7f7; margin-top:40px;">
+    <h2 style="color:#007bff;">How Verified Trader Network Works</h2>
+    <p style="max-width:700px; margin:auto; margin-top:10px; font-size:16px; line-height:1.6;">
+      Verified Trader Network (VTN) ensures transparency and trust for traders and investors.
+      <br><br>
+      1️⃣ Traders apply for verification using our simple form.<br>
+      2️⃣ Our team reviews performance history and trading behavior.<br>
+      3️⃣ Verified traders get a public badge and ranking on the leaderboard.<br>
+      4️⃣ Investors and other traders can trust the ratings and reputation.
+    </p>
   </section>
-  <section style="padding:40px 20px; text-align:center; font-family:Arial, sans-serif;">
-  <h2 style="color:#007bff;">Our Vision</h2>
-  <p style="max-width:700px; margin:auto; margin-top:10px; font-size:16px; line-height:1.6;">
-    To build the most trusted and transparent reputation system for traders across Africa.
-    <br><br>
-    Verified identities. Public track records. Trusted performance.  
-    <br>We want every trader and investor to have confidence in the market and each other.
-  </p>
+
+  <!-- Our Vision Section -->
+  <section class="fade-in" style="margin-top:40px;">
+    <h2 style="color:#007bff;">Our Vision</h2>
+    <p style="max-width:700px; margin:auto; margin-top:10px; font-size:16px; line-height:1.6;">
+      To build the most trusted and transparent reputation system for traders across Africa.
+      <br><br>
+      Verified identities. Public track records. Trusted performance.
+      <br>We want every trader and investor to have confidence in the market and each other.
+    </p>
   </section>
-}
-</script>
+
 </body>
 </html>
