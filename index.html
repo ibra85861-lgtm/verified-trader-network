@@ -221,6 +221,41 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSUeYbcCnRhp9k04pdb_ky11E
     console.error("Error loading sheet:", err);
   });
   </script>
+  <script>
+fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSUeYbcCnRhp9k04pdb_ky11EIRU9phwAE8jLvaBTaSmV-FTYHE0pgAwvzULN7IJqMGz7PLcSDTGdqZ/gviz/tq?sheet=Form%20Responses%201")
+  .then(res => res.text())
+  .then(rep => {
+    // Convert Google Visualization response to JSON
+    const jsonData = JSON.parse(rep.substr(47).slice(0, -2));
+    const rows = jsonData.table.rows;
+    const tableBody = document.getElementById("leaderboard-body");
+
+    tableBody.innerHTML = "";
+
+    // Take top 5 rows
+    rows.slice(0, 5).forEach((row, index) => {
+      const trader = row.c[0]?.v || "";
+      const platform = row.c[1]?.v || "";
+      const status = row.c[2]?.v || "";
+
+      let statusClass = "verified";
+      if (status.toLowerCase().includes("pending")) statusClass = "pending";
+      if (status.toLowerCase().includes("review")) statusClass = "review";
+
+      tableBody.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${trader}</td>
+          <td>${platform}</td>
+          <td><span class="status ${statusClass}">${status}</span></td>
+        </tr>
+      `;
+    });
+  })
+  .catch(err => {
+    console.error("Error loading sheet:", err);
+  });
+  </script>
   
 </body>
 </html>
